@@ -7,7 +7,7 @@ const {
   joinUser,
   getCurrentUser,
   leaveUser,
-  getRoomUsers
+  getRoomUsers,
 } = require("./utils/users");
 
 const app = express();
@@ -18,7 +18,7 @@ const bot = "DevChat";
 app.use(express.static(path.join(__dirname, "public")));
 
 //Run when new client connects
-io.on("connection", socket => {
+io.on("connection", (socket) => {
   //Joi Room
   socket.on("joinRoom", ({ username, room }) => {
     const user = joinUser(socket.id, username, room);
@@ -41,12 +41,12 @@ io.on("connection", socket => {
     //Send users and room info
     io.to(user.room).emit("roomUsers", {
       room: user.room,
-      users: getRoomUsers(user.room)
+      users: getRoomUsers(user.room),
     });
   });
 
   //Listen for chat messages
-  socket.on("chatMessage", msg => {
+  socket.on("chatMessage", (msg) => {
     const user = getCurrentUser(socket.id);
     io.to(user.room).emit("message", formatMessage(user.username, msg));
   });
@@ -68,11 +68,11 @@ io.on("connection", socket => {
     //Send users and room info
     io.to(user.room).emit("roomUsers", {
       room: user.room,
-      users: getRoomUsers(user.room)
+      users: getRoomUsers(user.room),
     });
   });
 });
 
-const PORT = 3000 || process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}.....`));
